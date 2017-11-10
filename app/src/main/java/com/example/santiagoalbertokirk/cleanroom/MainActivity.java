@@ -334,9 +334,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     switch (data.getStatus()){
                         case 0:
                             //correct
-//                            Intent intentHomeSceen = new Intent(LoginActivity.this, HomeScreenAdministrator.class);
-//                            startActivity(intentHomeSceen);
+                            Intent intentHomeSceen = new Intent(MainActivity.this, RoomsActivity.class);
+                            startActivity(intentHomeSceen);
                             showProgress(false);
+
                             break;
                         default:
                             //email repeated

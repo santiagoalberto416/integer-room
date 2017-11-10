@@ -23,6 +23,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".GraphMainActivity"></activity>
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".RoomsActivity" />
+        <activity android:name=".SingleRoomActivity"></activity>
     </application>
 
 </manifest>
