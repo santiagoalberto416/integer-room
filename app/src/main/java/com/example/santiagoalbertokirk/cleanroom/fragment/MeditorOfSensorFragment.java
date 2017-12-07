@@ -65,7 +65,9 @@ public class MeditorOfSensorFragment extends Fragment {
     }
 
     public void setValueToMeter(float value){
-        mMeterView.speedTo(value);
+        if(mMeterView!=null) {
+            mMeterView.speedTo(value);
+        }
     }
 
 }

@@ -27,10 +27,32 @@
             android:id="@+id/subtitle_text"
             android:textColor="@android:color/white"
             android:textSize="14sp"/>
-
-
-
     </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary">
+
+        <Button
+            android:id="@+id/ubication"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="32dp"
+            android:text="Ubicacion"
+            android:background="@drawable/shape_button_room"
+            android:layout_margin="8dp"/>
+        <Button
+            android:id="@+id/change_module"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="32dp"
+            android:background="@drawable/shape_button_room"
+            android:layout_margin="8dp"
+            android:text="Cambiar de modulo"/>
+
+    </LinearLayout>
 
     <!-- activity_screen_slide.xml -->
     <android.support.v4.view.ViewPager
@@ -38,5 +60,6 @@
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 
 </LinearLayout>

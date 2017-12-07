@@ -16,17 +16,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GraphMainActivity"></activity>
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".RoomsActivity" />
-        <activity android:name=".SingleRoomActivity"></activity>
+        <activity android:name=".GraphMainActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name=".RegisterActivity"  android:screenOrientation="portrait" />
+        <activity android:name=".RoomsActivity"  android:screenOrientation="portrait" />
+        <activity android:name=".SingleRoomActivity"  android:screenOrientation="portrait"></activity>
+        <activity android:name=".draw.MapActivity"  android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

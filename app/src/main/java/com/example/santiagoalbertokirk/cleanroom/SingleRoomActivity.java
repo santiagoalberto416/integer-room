@@ -1,19 +1,26 @@
 package com.example.santiagoalbertokirk.cleanroom;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.santiagoalbertokirk.cleanroom.data.GetRoomInterface;
+import com.example.santiagoalbertokirk.cleanroom.data.Module;
 import com.example.santiagoalbertokirk.cleanroom.data.Sensor;
 import com.example.santiagoalbertokirk.cleanroom.data.SingleRoomResponse;
+import com.example.santiagoalbertokirk.cleanroom.draw.MapActivity;
 import com.example.santiagoalbertokirk.cleanroom.fragment.MeditorOfSensorFragment;
 import com.example.santiagoalbertokirk.cleanroom.fragment.ModelViewSensor;
 import com.google.gson.FieldNamingPolicy;
@@ -35,7 +42,9 @@ public class SingleRoomActivity extends AppCompatActivity {
     public TextView mNameRoom;
     public TextView mSubtitleText;
     public ScreenSlidePagerAdapter mPagerAdapter;
+    private int moduleSelected = 0;
     private ViewPager mPager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +56,13 @@ public class SingleRoomActivity extends AppCompatActivity {
         if(id!=0){
             getRooms(id);
         }
+        findViewById(R.id.ubication).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SingleRoomActivity.this, MapActivity.class);
+                SingleRoomActivity.this.startActivity(intent);
+            }
+        });
 
         // Instantiate a ViewPager and a PagerAdapter.
 
@@ -78,7 +94,7 @@ public class SingleRoomActivity extends AppCompatActivity {
                         // specify an adapter (see also next example)
                         setValues(data);
                         // for default we show the module number 1
-                        mPagerAdapter.refreshData(data, 0);
+                        mPagerAdapter.refreshData(data, moduleSelected);
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override
@@ -108,7 +124,7 @@ public class SingleRoomActivity extends AppCompatActivity {
      */
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
 
-            List<Fragment> fragments;
+            List<Fragment> fragments = new ArrayList<>();
 
             public ScreenSlidePagerAdapter(FragmentManager fm) {
                 super(fm);
@@ -124,7 +140,23 @@ public class SingleRoomActivity extends AppCompatActivity {
                 return fragments.size();
             }
 
-            public void refreshData(SingleRoomResponse data, int module){
+            public void refreshData(final SingleRoomResponse data, final int module){
+                findViewById(R.id.change_module).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showModuleSelect(data.getModules());
+                    }
+                });
+                findViewById(R.id.ubication).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(SingleRoomActivity.this, MapActivity.class);
+                        intent.putExtra(MapActivity.X_POSITION, Float.parseFloat(data.getModules().get(module).getXPos()));
+                        intent.putExtra(MapActivity.Y_POSITION,  Float.parseFloat(data.getModules().get(module).getYPos()));
+                        SingleRoomActivity.this.startActivity(intent);
+                    }
+                });
+
                 List<String> types = new ArrayList<>();
                 List<ModelViewSensor> sensorsModels = new ArrayList<>();
                 for(Sensor sensor : data.getModules().get(module).getSensors()){
@@ -137,6 +169,7 @@ public class SingleRoomActivity extends AppCompatActivity {
 
                 for(int i = 0 ; i < types.size(); i++) {
                     float value = 0;
+
                     for (Sensor sensor : data.getModules().get(module).getSensors()) {
                         if(!types.get(i).equals(sensor.getType())){
                             value = value + sensor.getCurrentValue();
@@ -158,8 +191,46 @@ public class SingleRoomActivity extends AppCompatActivity {
                         ((MeditorOfSensorFragment)fragments.get(i)).setValueToMeter(sensorsModels.get(i).getValue());
                     }
                 }
+                notifyDataSetChanged();
             }
 
+        }
+
+
+        public void showModuleSelect(List<Module> modules){
+            AlertDialog.Builder builderSingle = new AlertDialog.Builder(SingleRoomActivity.this);
+            builderSingle.setTitle("Select One Module:");
+
+            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(SingleRoomActivity.this, android.R.layout.select_dialog_singlechoice);
+            for(Module module : modules){
+                arrayAdapter.add(module.getName());
+            }
+
+            builderSingle.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    String strName = arrayAdapter.getItem(which);
+                    moduleSelected = which;
+                    AlertDialog.Builder builderInner = new AlertDialog.Builder(SingleRoomActivity.this);
+                    builderInner.setMessage(strName);
+                    builderInner.setTitle("Your Selected Item is");
+                    builderInner.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog,int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builderInner.show();
+                }
+            });
+            builderSingle.show();
         }
 
 

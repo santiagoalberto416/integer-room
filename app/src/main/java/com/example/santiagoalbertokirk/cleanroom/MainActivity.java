@@ -100,13 +100,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-        mRegisterButton = (Button)findViewById(R.id.register_user);
-        mRegisterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //startActivity(new Intent(LoginActivity.this, RegisterUserActivity.class));
-            }
-        });
         mSettingsButton = findViewById(R.id.configurations);
         mSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -312,7 +305,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     public void registerUser(final String email, String password){
-        if(!SharedUtils.getInstance().isValidURL(SharedUtils.getInstance().getIpDefault(this))){
+        String url = SharedUtils.getInstance().getIpDefault(this);
+        if(!SharedUtils.getInstance().isValidURL(url)){
             Toast.makeText(MainActivity.this, "Url invalida intenta otra", Toast.LENGTH_LONG);
             return;
         }
@@ -341,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             break;
                         default:
                             //email repeated
-                            Toast.makeText(MainActivity.this, "Password o correo incorrectos", Toast.LENGTH_LONG);
+                            Toast.makeText(MainActivity.this, "Password o correo incorrectos", Toast.LENGTH_LONG).show();
                             break;
                     }
                 }
